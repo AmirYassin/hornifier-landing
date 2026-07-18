@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HORNIFIER — Horn-Physics Coloration VST/AU</title>
+  <meta name="description" content="HORNIFIER is a macOS horn-physics character coloration plugin for VST3, AU, and Standalone. Authentic bell geometry, drive, waveguide physics, real-time spectrum analysis. $49 intro." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="HORNIFIER — Horn-Physics Character Coloration" />
+  <meta property="og:description" content="Infuse tracks with authentic horn bell character. Gramophones, megaphones, broadcast warmth — shaped by real waveguide physics. VST3 / AU / Standalone · macOS arm64." />
+  <meta property="og:image" content="assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+
+  <!-- Structured data — Product schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "HORNIFIER",
+    "description": "Horn-physics character coloration plugin for macOS. Real Kelly-Lochbaum waveguide, drive stage, wave steepening, and real-time spectrum analysis. VST3 / AU / Standalone.",
+    "brand": {
+      "@type": "Brand",
+      "name": "HORNIFIER"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "49",
+      "availability": "https://schema.org/InStock",
+      "priceValidUntil": "2026-12-31"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       1. HERO
+       data-component="Hero"
+  ═══════════════════════════════════════════════ -->
+  <section id="hero" data-component="Hero">
+    <div class="hero-inner content-col">
+      <div class="hero-brand">
+        <img src="assets/logo.png" alt="HORNIFIER logo — stylised horn bell" class="hero-logo" width="72" height="72" />
+        <h1 class="wordmark">HORNIFIER</h1>
+      </div>
+      <p class="tagline">Horn-physics character coloration</p>
+      <p class="hero-sub">Infuse tracks with authentic bell geometry — gramophones, megaphones, broadcast warmth — driven by a real Kelly-Lochbaum waveguide. VST3 · AU · Standalone.</p>
+      <div class="hero-ctas">
+        <button id="buy-btn" class="btn btn-primary">Buy — <span class="cta-price">$49</span></button>
+        <button id="trial-btn" class="btn btn-secondary">Free trial</button>
+      </div>
+      <figure class="hero-screenshot">
+        <img src="assets/screenshot-1.png" alt="HORNIFIER plugin UI — full view showing horn cross-section, parameter sliders, and spectrum analyser" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       2. AUDIO DEMO
+       data-component="ABPlayer"
+  ═══════════════════════════════════════════════ -->
+  <section id="audio-demo" data-component="ABPlayer">
+    <div class="content-col">
+      <h2 class="section-title">Hear it</h2>
+      <p class="section-sub">Toggle between the raw signal and HORNIFIER's processed output — same track, same moment.</p>
+
+      <div class="ab-player" id="ab-player">
+        <!-- Audio elements — preload="none" for performance -->
+        <audio id="audio-dry" src="assets/demo-dry.mp3" preload="none"></audio>
+        <audio id="audio-wet" src="assets/demo-wet.mp3" preload="none"></audio>
+
+        <div class="ab-controls">
+          <button class="ab-toggle" id="ab-mode-btn" aria-label="Switch between Dry and Wet">
+            <span class="ab-label" id="ab-label">DRY</span>
+          </button>
+          <button class="ab-play" id="ab-play-btn" aria-label="Play / Pause">
+            <span class="play-icon" id="play-icon">&#9654;</span>
+          </button>
+          <div class="ab-track-info">
+            <span id="ab-state-label" class="ab-state">DRY — unprocessed</span>
+          </div>
+        </div>
+
+        <!-- Shown if audio is unavailable (handled in app.js via onerror) -->
+        <div class="ab-coming-soon" id="ab-coming-soon" hidden>
+          <span>Audio demos coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       3. WALKTHROUGH
+       data-component="Walkthrough"
+  ═══════════════════════════════════════════════ -->
+  <section id="walkthrough" data-component="Walkthrough">
+    <div class="content-col">
+      <h2 class="section-title">Shape the horn</h2>
+      <figure class="walkthrough-figure">
+        <img src="assets/screenshot-2.png" alt="HORNIFIER horn cross-section editor — interactive geometry control" class="walkthrough-img" />
+        <figcaption>
+          Draw your horn's geometry in real time. Drag the throat radius, flare ratio, and bell diameter — the waveguide recalculates instantly, painting the cross-section as you sculpt.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       4. FEATURES
+       data-component="FeatureGrid"
+  ═══════════════════════════════════════════════ -->
+  <section id="features" data-component="FeatureGrid">
+    <div class="content-col">
+      <h2 class="section-title">What's inside</h2>
+      <div class="feature-grid">
+
+        <div class="feature-card">
+          <div class="feature-icon">&#9685;</div>
+          <h3>Interactive Horn Editor</h3>
+          <p>Live cross-section canvas. Drag geometry sliders and watch the bell redraw in real time.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#127927;</div>
+          <h3>Kelly-Lochbaum Waveguide</h3>
+          <p>Up to 40 conical scattering sections. Authentic resonance, impedance, and reflection — not convolution.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#128293;</div>
+          <h3>Drive &amp; Wave Steepening</h3>
+          <p>Hammerstein-Wiener throat nonlinearity plus distributed brassy bloom, controlled independently.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#128202;</div>
+          <h3>DRY / WET / DIFF Analyser</h3>
+          <p>Real-time FFT spectrum showing dry, processed, and difference signals simultaneously.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#127926;</div>
+          <h3>10 Curated Presets</h3>
+          <p>Klipschorn, WE-15A, Victrola, Megaphone, Trumpet Bell, French Horn, Giant Conch &amp; more.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#9881;</div>
+          <h3>Crossover &amp; Wet/Dry</h3>
+          <p>Linkwitz-Riley HP into the horn, delayed dry band for alignment, full wet/dry blend control.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       5. HOW IT WORKS
+       data-component="HowItWorks"
+  ═══════════════════════════════════════════════ -->
+  <section id="how-it-works" data-component="HowItWorks">
+    <div class="content-col hiw-layout">
+      <div class="hiw-text">
+        <h2 class="section-title">Real physics, not samples</h2>
+        <p>Most "horn" effects are IRs: they capture one bell, at one moment, at one SPL. HORNIFIER models the <em>mechanism</em>. A real Kelly-Lochbaum scattering chain propagates your audio through a series of conical tube segments. Geometry changes the scattering coefficients. Drive changes the nonlinear boundary at the throat. Wave steepening adds distributed distortion down the bore. The result changes with every parameter — because the physics change with every parameter.</p>
+        <p>The Levine-Schwinger mouth radiation filter shapes the open-end reflection to match your chosen bell geometry: unflanged, flanged, or spherical cap. Crossover frequency sets which part of your signal enters the waveguide. Everything else passes through time-aligned.</p>
+      </div>
+      <figure class="hiw-figure">
+        <img src="assets/screenshot-2.png" alt="Horn cross-section close-up showing geometry parameters" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       6. PRICING
+       data-component="PricingCTA"
+  ═══════════════════════════════════════════════ -->
+  <section id="pricing" data-component="PricingCTA">
+    <div class="content-col">
+      <div class="pricing-card">
+        <div class="pricing-badge">Intro pricing</div>
+        <div class="pricing-amount">
+          <span class="price-current" id="price-display">$49</span>
+          <span class="price-full" id="price-full-display">$69</span>
+        </div>
+        <ul class="pricing-perks">
+          <li>VST3 + AU + Standalone — one licence</li>
+          <li>Free updates forever</li>
+          <li>30-day money-back guarantee</li>
+          <li>Activate on up to 3 machines</li>
+        </ul>
+        <button class="btn btn-primary buy" id="pricing-buy-btn">Buy HORNIFIER — <span class="cta-price">$49</span></button>
+        <p class="pricing-trust">
+          <span class="lock-icon">&#128274;</span> Secure checkout via&nbsp;<strong>Lemon Squeezy</strong>
+        </p>
+        <p class="pricing-refund">30-day full refund, no questions asked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       7. SYSTEM REQUIREMENTS
+       data-component="SystemReqs"
+  ═══════════════════════════════════════════════ -->
+  <section id="system-reqs" data-component="SystemReqs">
+    <div class="content-col">
+      <h2 class="section-title">System requirements</h2>
+      <div class="reqs-grid">
+        <div class="req-item">
+          <span class="req-label">Platform</span>
+          <span class="req-value">macOS 11 Big Sur or later</span>
+        </div>
+        <div class="req-item">
+          <span class="req-label">Architecture</span>
+          <span class="req-value">Apple Silicon (arm64) — native</span>
+        </div>
+        <div class="req-item">
+          <span class="req-label">Formats</span>
+          <span class="req-value">VST3 · AU · Standalone</span>
+        </div>
+        <div class="req-item">
+          <span class="req-label">DAW</span>
+          <span class="req-value">Any VST3 or AU host — Logic Pro, Ableton Live, Reaper, Bitwig, Cubase, Nuendo…</span>
+        </div>
+        <div class="req-item">
+          <span class="req-label">CPU</span>
+          <span class="req-value">M1 / M2 / M3 / M4 (any Apple Silicon)</span>
+        </div>
+        <div class="req-item">
+          <span class="req-label">RAM</span>
+          <span class="req-value">8 GB recommended</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       8. FAQ
+       data-component="FAQ"
+  ═══════════════════════════════════════════════ -->
+  <section id="faq" data-component="FAQ">
+    <div class="content-col">
+      <h2 class="section-title">Frequently asked</h2>
+      <div class="faq-list" id="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Which formats are included?
+            <span class="faq-chevron" aria-hidden="true">&#8250;</span>
+          </button>
+          <div class="faq-answer" hidden>
+            <p>Your licence covers VST3, AU, and Standalone — all three in one download, no extra charge. VST3 works in Ableton Live, Reaper, Bitwig, Cubase, Nuendo, and any other VST3 host. AU works in Logic Pro, GarageBand, and AU-compatible hosts. Standalone lets you run HORNIFIER without a DAW at all.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            What's in the free trial?
+            <span class="faq-chevron" aria-hidden="true">&#8250;</span>
+          </button>
+          <div class="faq-answer" hidden>
+            <p>The trial is a fully functional time-limited build — all presets, all parameters, no feature restrictions. Audio is intermittently muted after 20 minutes of continuous use. When you're ready to buy, your settings carry over to the activated version seamlessly.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            What is the refund policy?
+            <span class="faq-chevron" aria-hidden="true">&#8250;</span>
+          </button>
+          <div class="faq-answer" hidden>
+            <p>Full refund within 30 days of purchase, no questions asked. Email support and we'll process it the same business day. We process refunds via Lemon Squeezy — the same platform used at checkout.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Do I get free updates?
+            <span class="faq-chevron" aria-hidden="true">&#8250;</span>
+          </button>
+          <div class="faq-answer" hidden>
+            <p>Yes — all v1.x updates are free for ever. New presets, DSP refinements, and DAW compatibility fixes land automatically. If a major v2 release ever requires an upgrade fee, existing customers get a significant discount and plenty of notice.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Which DAWs are supported?
+            <span class="faq-chevron" aria-hidden="true">&#8250;</span>
+          </button>
+          <div class="faq-answer" hidden>
+            <p>Any DAW that loads VST3 or AU plugins on macOS. Confirmed: Logic Pro, Ableton Live 11+, Reaper, Bitwig Studio, Cubase, Nuendo, Pro Tools (AudioSuite via AU bridge), GarageBand. If your host loads AU or VST3, HORNIFIER loads.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       9. FOOTER CTA
+       data-component="FooterCTA"
+  ═══════════════════════════════════════════════ -->
+  <section id="footer-cta" data-component="FooterCTA">
+    <div class="content-col footer-cta-inner">
+      <p class="footer-cta-headline">Ready to shape your sound?</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary buy" id="footer-buy-btn">Buy — <span class="cta-price">$49</span></button>
+        <button class="btn btn-secondary" id="footer-trial-btn">Free trial</button>
+      </div>
+      <p class="footer-copy">&copy; 2026 HORNIFIER. Horn-physics character coloration.</p>
+    </div>
+  </section>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
