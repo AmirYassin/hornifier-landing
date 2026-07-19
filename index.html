@@ -71,26 +71,25 @@
   <section id="audio-demo" data-component="ABPlayer">
     <div class="content-col">
       <h2 class="section-title">Hear it</h2>
-      <p class="section-sub">Toggle between the raw signal and HORNIFIER's processed output — same track, same moment.</p>
+      <p class="section-sub">Same 130 BPM techno loop — switch between unprocessed and two horn characters.</p>
 
       <div class="ab-player" id="ab-player">
-        <!-- Audio elements — preload="none" for performance -->
-        <audio id="audio-dry" src="assets/demo-dry.mp3" preload="none" loop></audio>
-        <audio id="audio-wet" src="assets/demo-wet.mp3" preload="none" loop></audio>
+        <audio id="audio-dry"  src="assets/demo-dry.mp3"  preload="none" loop></audio>
+        <audio id="audio-wet"  src="assets/demo-wet.mp3"  preload="none" loop></audio>
+        <audio id="audio-wet2" src="assets/demo-wet2.mp3" preload="none" loop></audio>
 
         <div class="ab-controls">
-          <button class="ab-toggle" id="ab-mode-btn" aria-label="Switch between Dry and Wet">
-            <span class="ab-label" id="ab-label">DRY</span>
-          </button>
+          <button class="ab-source-btn" id="btn-dry"  aria-label="Play dry signal">DRY</button>
+          <button class="ab-source-btn" id="btn-wet"  aria-label="Play Klipschorn preset">KLIPSCHORN</button>
+          <button class="ab-source-btn" id="btn-wet2" aria-label="Play Trumpet Bell preset">TRUMPET BELL</button>
           <button class="ab-play" id="ab-play-btn" aria-label="Play / Pause">
             <span class="play-icon" id="play-icon">&#9654;</span>
           </button>
           <div class="ab-track-info">
-            <span id="ab-state-label" class="ab-state">DRY — unprocessed</span>
+            <span id="ab-state-label" class="ab-state">Select a source above, then press play</span>
           </div>
         </div>
 
-        <!-- Shown if audio is unavailable (handled in app.js via onerror) -->
         <div class="ab-coming-soon" id="ab-coming-soon" hidden>
           <span>Audio demos coming soon</span>
         </div>

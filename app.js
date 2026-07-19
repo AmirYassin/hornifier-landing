@@ -148,124 +148,84 @@
     }, 4000);
   }
 
-  /* ─── A/B Audio Player ────────────────────────────── */
+  /* ─── Audio Player (3-source: DRY / KLIPSCHORN / TRUMPET BELL) ─── */
   function initABPlayer() {
     var player = document.getElementById("ab-player");
     if (!player) return;
 
-    var audioDry = document.getElementById("audio-dry");
-    var audioWet = document.getElementById("audio-wet");
-    var playBtn = document.getElementById("ab-play-btn");
-    var playIcon = document.getElementById("play-icon");
-    var modeBtn = document.getElementById("ab-mode-btn");
-    var modeLabel = document.getElementById("ab-label");
+    var sources = {
+      dry:  { el: document.getElementById("audio-dry"),  label: "DRY — unprocessed",             btn: document.getElementById("btn-dry")  },
+      wet:  { el: document.getElementById("audio-wet"),  label: "KLIPSCHORN — warm horn coloration", btn: document.getElementById("btn-wet")  },
+      wet2: { el: document.getElementById("audio-wet2"), label: "TRUMPET BELL — bright presence",  btn: document.getElementById("btn-wet2") }
+    };
+
+    var playBtn    = document.getElementById("ab-play-btn");
+    var playIcon   = document.getElementById("play-icon");
     var stateLabel = document.getElementById("ab-state-label");
     var comingSoon = document.getElementById("ab-coming-soon");
 
-    if (!audioDry || !audioWet || !playBtn || !modeBtn) return;
+    if (!playBtn) return;
 
-    var state = {
-      isDry: true,     // currently playing dry or wet
-      isPlaying: false,
-      audioErrorCount: 0
-    };
+    var currentKey = "dry";
+    var isPlaying  = false;
 
-    // Graceful degradation — if either audio file fails to load, show "coming soon".
-    function onAudioError() {
-      state.audioErrorCount += 1;
-      // Only need one error to know demos are missing.
-      if (state.audioErrorCount >= 1) {
-        showDemosMissing();
-      }
-    }
+    function currentEl() { return sources[currentKey].el; }
 
     function showDemosMissing() {
-      // Hide the controls, show the "coming soon" message.
       var controls = player.querySelector(".ab-controls");
       if (controls) controls.style.display = "none";
       if (comingSoon) comingSoon.hidden = false;
     }
 
-    audioDry.addEventListener("error", onAudioError);
-    audioWet.addEventListener("error", onAudioError);
-
-    // Probe: attempt to load audio to detect 404s early (without autoplay).
-    // Setting src triggers a load, onerror fires synchronously if file is missing.
-    // We use preload="none" so this is just a metadata probe on user interaction;
-    // actual errors surface when play() is called.
-
-    // ── Play / Pause ──
-    playBtn.addEventListener("click", function () {
-      var current = state.isDry ? audioDry : audioWet;
-
-      if (state.isPlaying) {
-        current.pause();
-        setPlaying(false);
-      } else {
-        // If the other track was paused, sync position before playing.
-        var other = state.isDry ? audioWet : audioDry;
-        current.currentTime = other.currentTime || 0;
-
-        var playPromise = current.play();
-        if (playPromise !== undefined) {
-          playPromise.then(function () {
-            setPlaying(true);
-          }).catch(function () {
-            // Audio not available — show coming soon gracefully.
-            showDemosMissing();
-          });
-        } else {
-          setPlaying(true);
-        }
-      }
-    });
-
-    // ── Toggle Dry / Wet ──
-    modeBtn.addEventListener("click", function () {
-      if (!state.isPlaying) {
-        // Not playing — just switch label.
-        state.isDry = !state.isDry;
-        updateModeUI();
-        return;
-      }
-
-      // Preserve playhead across the switch.
-      var outgoing = state.isDry ? audioDry : audioWet;
-      var incoming = state.isDry ? audioWet : audioDry;
-      var savedTime = outgoing.currentTime;
-
-      outgoing.pause();
-      incoming.currentTime = savedTime;
-
-      state.isDry = !state.isDry;
-      updateModeUI();
-
-      var playPromise = incoming.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(function () {
-          showDemosMissing();
+    Object.keys(sources).forEach(function (key) {
+      var src = sources[key];
+      if (src.el) src.el.addEventListener("error", showDemosMissing);
+      if (src.btn) {
+        src.btn.addEventListener("click", function () {
+          if (currentKey === key) return;
+          var savedTime = currentEl().currentTime;
+          currentEl().pause();
+          currentKey = key;
+          setActiveBtnUI();
+          if (isPlaying) {
+            var el = currentEl();
+            el.currentTime = savedTime;
+            el.play().catch(showDemosMissing);
+          }
+          if (stateLabel) stateLabel.textContent = sources[currentKey].label;
         });
       }
     });
 
-    // Audio elements have loop=true so ended fires only during seamless loops — no action needed.
-
-    function setPlaying(playing) {
-      state.isPlaying = playing;
-      // Unicode: pause ‖ vs play ▶
-      playIcon.innerHTML = playing ? "&#9646;&#9646;" : "&#9654;";
-      playBtn.setAttribute("aria-label", playing ? "Pause" : "Play");
-    }
-
-    function updateModeUI() {
-      var label = state.isDry ? "DRY" : "WET";
-      modeLabel.textContent = label;
-      modeBtn.classList.toggle("wet", !state.isDry);
-      modeBtn.setAttribute("aria-label", "Switch to " + (state.isDry ? "wet" : "dry"));
-      if (stateLabel) {
-        stateLabel.textContent = state.isDry ? "DRY — unprocessed" : "WET — HORNIFIER processed";
+    playBtn.addEventListener("click", function () {
+      var el = currentEl();
+      if (!el) return;
+      if (isPlaying) {
+        el.pause();
+        setPlaying(false);
+      } else {
+        el.play().then(function () {
+          setPlaying(true);
+        }).catch(showDemosMissing);
       }
+    });
+
+    function setPlaying(on) {
+      isPlaying = on;
+      playIcon.innerHTML = on ? "&#9646;&#9646;" : "&#9654;";
+      playBtn.setAttribute("aria-label", on ? "Pause" : "Play");
+      if (stateLabel) stateLabel.textContent = sources[currentKey].label;
     }
+
+    function setActiveBtnUI() {
+      Object.keys(sources).forEach(function (key) {
+        var btn = sources[key].btn;
+        if (btn) btn.classList.toggle("active", key === currentKey);
+      });
+    }
+
+    // Initialise button state
+    setActiveBtnUI();
   }
 
   /* ─── FAQ Accordion ───────────────────────────────── */

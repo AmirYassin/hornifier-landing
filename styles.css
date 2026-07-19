@@ -256,26 +256,31 @@ section:nth-child(even) {
   gap: 1rem;
 }
 
-.ab-toggle {
+.ab-source-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
+  padding: 0 14px;
   height: 44px;
   border-radius: 6px;
   background-color: var(--blue-dark);
   border: 1.5px solid var(--blue-mid);
   color: #7cb8d8;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
 }
 
-.ab-toggle:hover,
-.ab-toggle.wet {
+.ab-source-btn:hover {
+  background-color: var(--blue-mid);
+  color: var(--text-light);
+}
+
+.ab-source-btn.active {
   background-color: var(--blue-mid);
   border-color: var(--gold-muted);
   color: var(--gold-bright);
