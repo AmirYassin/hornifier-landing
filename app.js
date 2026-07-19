@@ -248,9 +248,7 @@
       }
     });
 
-    // Sync play state when tracks end naturally.
-    audioDry.addEventListener("ended", function () { setPlaying(false); });
-    audioWet.addEventListener("ended", function () { setPlaying(false); });
+    // Audio elements have loop=true so ended fires only during seamless loops — no action needed.
 
     function setPlaying(playing) {
       state.isPlaying = playing;
