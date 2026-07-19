@@ -101,15 +101,11 @@
     var url = cfg.TRIAL_URL;
 
     if (url) {
-      // Trigger browser download via a hidden anchor element.
-      var a = document.createElement("a");
-      a.href = url;
-      a.download = "";
-      a.rel = "noopener noreferrer";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (window.LemonSqueezy && typeof window.LemonSqueezy.Url === "object") {
+        window.LemonSqueezy.Url.Open(url);
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
     } else {
       showComingSoonInline(triggerBtn, "trial");
     }
