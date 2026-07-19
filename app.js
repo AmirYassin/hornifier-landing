@@ -154,9 +154,9 @@
     if (!player) return;
 
     var sources = {
-      dry:  { el: document.getElementById("audio-dry"),  label: "DRY — unprocessed",             btn: document.getElementById("btn-dry")  },
+      dry:  { el: document.getElementById("audio-dry"),  label: "DRY — unprocessed",                btn: document.getElementById("btn-dry")  },
       wet:  { el: document.getElementById("audio-wet"),  label: "KLIPSCHORN — warm horn coloration", btn: document.getElementById("btn-wet")  },
-      wet2: { el: document.getElementById("audio-wet2"), label: "TRUMPET BELL — bright presence",  btn: document.getElementById("btn-wet2") }
+      wet2: { el: document.getElementById("audio-wet2"), label: "TRUMPET BELL — bright presence",    btn: document.getElementById("btn-wet2") }
     };
 
     var playBtn    = document.getElementById("ab-play-btn");
@@ -168,6 +168,7 @@
 
     var currentKey = "dry";
     var isPlaying  = false;
+    var unlocked   = false;
 
     function currentEl() { return sources[currentKey].el; }
 
@@ -177,48 +178,79 @@
       if (comingSoon) comingSoon.hidden = false;
     }
 
-    function safePlay(el, onSuccess) {
-      // Safari can return undefined from play() — guard before chaining .then/.catch
-      var p;
-      try { p = el.play(); } catch (e) { return; }
-      if (p && typeof p.then === "function") {
-        p.then(onSuccess).catch(function () {
-          // Autoplay blocked or file missing — fail silently, don't hide controls
-        });
-      } else {
-        // Synchronous play (old Safari) — assume success
-        if (onSuccess) onSuccess();
-      }
+    // Safari requires each audio element to be individually unlocked during
+    // a user gesture. Do this on the very first interaction with the player.
+    function unlockAll() {
+      if (unlocked) return;
+      unlocked = true;
+      Object.keys(sources).forEach(function (key) {
+        var el = sources[key].el;
+        if (!el) return;
+        el.muted = true;
+        var p = el.play();
+        if (p && typeof p.then === "function") {
+          p.then(function () { el.pause(); el.currentTime = 0; el.muted = false; })
+           .catch(function () { el.muted = false; });
+        } else {
+          el.pause(); el.currentTime = 0; el.muted = false;
+        }
+      });
     }
 
+    // JS-based loop: Safari's loop attribute has a delay bug in 14.x.
+    // Use ended event instead (loop attribute removed from HTML).
     Object.keys(sources).forEach(function (key) {
-      var src = sources[key];
-      if (src.el) src.el.addEventListener("error", showDemosMissing);
-      if (src.btn) {
-        src.btn.addEventListener("click", function () {
-          if (currentKey === key) return;
-          var savedTime = currentEl().currentTime;
-          currentEl().pause();
-          currentKey = key;
-          setActiveBtnUI();
-          if (isPlaying) {
-            var el = currentEl();
-            el.currentTime = savedTime;
-            safePlay(el, null);
-          }
-          if (stateLabel) stateLabel.textContent = sources[currentKey].label;
-        });
-      }
+      var el = sources[key].el;
+      if (!el) return;
+      el.addEventListener("error", showDemosMissing);
+      el.addEventListener("ended", function () {
+        if (isPlaying && currentKey === key) {
+          el.currentTime = 0;
+          el.play();
+        }
+      });
     });
 
+    // Source selector buttons — switch track, stay at same position
+    Object.keys(sources).forEach(function (key) {
+      var btn = sources[key].btn;
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        unlockAll();
+        if (currentKey === key) return;
+        var savedTime = currentEl().currentTime;
+        currentEl().pause();
+        currentKey = key;
+        setActiveBtnUI();
+        if (stateLabel) stateLabel.textContent = sources[currentKey].label;
+        if (isPlaying) {
+          var el = currentEl();
+          el.currentTime = savedTime;
+          // Must call play() synchronously here — Safari gesture context is intact
+          var p = el.play();
+          if (p && typeof p.then === "function") {
+            p.catch(function () {});
+          }
+        }
+      });
+    });
+
+    // Play / Pause button
     playBtn.addEventListener("click", function () {
+      unlockAll();
       var el = currentEl();
       if (!el) return;
       if (isPlaying) {
         el.pause();
         setPlaying(false);
       } else {
-        safePlay(el, function () { setPlaying(true); });
+        // Call play() synchronously in gesture handler — do not defer
+        var p = el.play();
+        if (p && typeof p.then === "function") {
+          p.then(function () { setPlaying(true); }).catch(function () {});
+        } else {
+          setPlaying(true);
+        }
       }
     });
 
@@ -236,7 +268,6 @@
       });
     }
 
-    // Initialise button state
     setActiveBtnUI();
   }
 
