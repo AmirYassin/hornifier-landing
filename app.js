@@ -177,6 +177,20 @@
       if (comingSoon) comingSoon.hidden = false;
     }
 
+    function safePlay(el, onSuccess) {
+      // Safari can return undefined from play() — guard before chaining .then/.catch
+      var p;
+      try { p = el.play(); } catch (e) { return; }
+      if (p && typeof p.then === "function") {
+        p.then(onSuccess).catch(function () {
+          // Autoplay blocked or file missing — fail silently, don't hide controls
+        });
+      } else {
+        // Synchronous play (old Safari) — assume success
+        if (onSuccess) onSuccess();
+      }
+    }
+
     Object.keys(sources).forEach(function (key) {
       var src = sources[key];
       if (src.el) src.el.addEventListener("error", showDemosMissing);
@@ -190,7 +204,7 @@
           if (isPlaying) {
             var el = currentEl();
             el.currentTime = savedTime;
-            el.play().catch(showDemosMissing);
+            safePlay(el, null);
           }
           if (stateLabel) stateLabel.textContent = sources[currentKey].label;
         });
@@ -204,9 +218,7 @@
         el.pause();
         setPlaying(false);
       } else {
-        el.play().then(function () {
-          setPlaying(true);
-        }).catch(showDemosMissing);
+        safePlay(el, function () { setPlaying(true); });
       }
     });
 
